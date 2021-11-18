@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Product View</title>
+</head>
+<body>
+<h1>Product List</h1>
+{% for p in products %}
+<ul>
+	<li>Product_ID = {{p.product_id}}</li>
+	<li>Product_NAME = {{p.product_name}}</li>
+	<li>Product_CATEGORY = {{p.category}}</li>
+	<li>Product_SUBCATEGORY = {{p.subcategory}}</li>
+	<li>Product_PRICE = {{p.price}}</li>
+	<li>Product_DESC = {{p.desc}}</li>
+	<li>Product_PUB_DATE = {{p.pub_date}}</li>
+	<li><img src="{{ MEDIA_URL }}{{p.image}}" width="100" height="100"/></li>
+</ul>
+{% endfor %}
+</body>
+</html>

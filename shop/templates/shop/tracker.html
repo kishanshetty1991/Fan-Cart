@@ -1,0 +1,140 @@
+{%extends 'shop/basic.html'%}
+{%block title%} Tracker-My Ecom Cart {%endblock%}
+
+{%block css%}
+
+.btn-primary{
+    position: relative; 
+    left: 30%; 
+    width: 500px 
+}
+.mystr1{
+    background-color: #3d3d3d;
+    color: #FFFFFF;
+}
+
+@media screen and (max-width: 600px){
+.btn-primary {
+    position: relative;
+    left: 10%;
+    width: 250px;
+}
+}
+@media screen and (max-width: 992px){
+.btn-primary {
+    position: relative;
+    left: 10%;
+    width: 250px;
+}
+}
+{%endblock%}
+{%block body%}
+<div class="container">
+    <div class="col mx-4 my-4">
+        <h2>Ecom Cart Tracker - Track Your Orders</h2>
+        <form class="row g-3 my-4" method="post" action="#" id="trackerForm">
+            {%csrf_token%}
+            <input type="hidden" name="itemsJson" id="itemsJson">
+            <div class="col-md-6">
+                <label for="inputName" class="form-label">Order Id</label>
+                <input type="name" class="form-control" id="order_id" name="order_id" placeholder="Please Enter Your Order Id" required>
+            </div>
+            <div class="col-md-6">
+                <label for="inputEmail" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Please Enter Your Email" required>
+            </div>
+            <div>
+            <button type="submit" class="btn btn-primary" >Track Order</button>
+            </div>
+        </form>
+
+        
+    </div>
+    <div class="col mx-4 my-4">
+        <h2>Your Order Status</h2>
+        <div class="my-4">
+            <ul class="list-group" id="items">
+                Enter Order ID and Email and Click Track Order to Find Details about your Order!
+            </ul>
+        </div>
+        <h2>Your Order Details</h2>
+        <div class="my-4">
+            <ul class="list-group" id="citems">
+                Enter Order ID and Email and Click Track Order to Find Details about your Order!
+            </ul>
+        </div>
+    </div>
+</div>
+{%endblock%}
+{%block js%}
+<script type="text/javascript">
+$('#trackerForm').submit(function(event) {
+    $('#items').empty();
+    var formData = {
+        'order_id': $('input[name=order_id]').val(),
+        'email': $('input[name=email]').val(),
+        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+    };
+
+
+    $.ajax({
+        type: 'POST',
+        url: '/shop/tracker/',
+        data: formData,
+        encode: true,
+    })
+
+    .done(function(data){
+        data = JSON.parse(data);
+        console.log(data);
+        updates = data[0];
+        if (updates.length > 0 & updates != {}){
+        for (var i=0;i<updates.length;i++) {
+            let text = updates[i]['text'];
+            let time = updates[i]['time'];
+            let mystr = ` <li class="list-group-item d-flex justify-content-between align-items-center">
+                           <div title="Product Name"><h5> ${text}</h5></div>
+                            <div class="badge bg-primary rounded-pill" title="Order Quantity"><h5>${time}</h5></div>
+                        </li>`;
+            $('#items').append(mystr);
+        }
+        } 
+        else{
+            let mystr = ` <li class="list-group-item d-flex justify-content-between align-items-center">
+                           <div title="Product Name">
+                           <h5>
+                            Sorry But there is No Record of Your Order ID.<br>
+                           Please Check Your Email and Order ID again 
+                           </h5>
+                           </div>
+                           
+                        </li>`;
+            $('#items').append(mystr);   
+}
+//Cart Details:
+cart = JSON.parse(data[1]);
+var totalprice =0;
+for (item in cart) {
+        console.log(cart[item]);
+        let name = cart[item][1];
+        let qty = cart[item][0];
+        let price1 = cart[item][2];
+        let price = cart[item][2] * qty;
+        totalprice += price;
+        let mystr = ` <li class="list-group-item d-flex justify-content-between align-items-center">
+                   <span title="Product Name and Product Price"><h5 style="color: #080808">Product Name: ${name}</h5><h5 style="color: #080808">Product Price: ₹${price1}</h5></span>
+                    <span class="badge bg-primary rounded-pill" title="Order Quantity"><h5>${qty}</h5></span>
+                </li>`;
+        $('#citems').append(mystr);
+    }
+    mystr1 = `<li class="list-group-item d-flex justify-content-between align-items-center mystr1">
+  <span title="Total Price"><h5>Total Price(in Rs.)</h5></span>
+ <span title="Total Price"><h5>₹${totalprice}</h5></span>
+ </li>`
+    $('#items').append(mystr1);
+    });
+    event.preventDefault()
+
+});
+</script>
+{%endblock%}

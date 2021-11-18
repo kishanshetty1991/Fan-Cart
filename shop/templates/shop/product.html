@@ -1,0 +1,39 @@
+{%extends "shop/basic.html"%}
+
+{%block title%}
+{{product.product_name}} - My Ecom Cart
+{%endblock%}
+{%block css%}
+.card-img-top{
+	width:255px;
+    height:300px;
+    object-fit: contain;
+}
+h5{
+	font: bold 32px "Playfair Display";
+    margin: 0 15px 0 0;
+}
+b{
+	font: bold 20px "Playfair Display";
+    margin: 0 15px 0 0;
+}
+{%endblock%}
+{%block body%}
+<div class="container my-4">
+	<div class="row">
+		<div class="col-md-4">
+			<div class="row">
+				<img src="{{ MEDIA_URL }}{{product.image}}" class="card-img-top" />
+			</div>
+			<div class="btn btn-primary mx-2">Buy Now</div>
+			<div class="btn btn-primary">Add To Cart</div>
+		</div>
+		<div class="col-md-8">
+			<h5>{{product.product_name}}</h5>
+			<p><b>Rs.{{product.price}}</b></p>
+			<p>{{product.desc}}</p>
+
+		</div>
+	</div>
+</div>
+{%endblock%}
